@@ -55,7 +55,7 @@ export default function App() {
     <main className="tap-shell">
       <header className="tap-header">
         <span className="tap-mark">FaucetChain</span>
-        <span className="tap-meta">faucet.block.chains.my</span>
+        <span className="tap-meta">faucet.chains.my</span>
       </header>
 
       <div className="tap-stage">
