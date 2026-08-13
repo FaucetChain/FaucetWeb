@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
+import ClusterValve from "./ClusterValve";
 import {
   airdropAmount,
   explorerAddressUrl,
@@ -10,11 +11,6 @@ import {
   type FaucetBalance,
   type Network,
 } from "./lib/solana";
-
-const NETWORKS: { id: Network; label: string }[] = [
-  { id: "devnet", label: "Devnet" },
-  { id: "testnet", label: "Testnet" },
-];
 
 export default function App() {
   const [network, setNetwork] = useState<Network>("devnet");
@@ -56,99 +52,84 @@ export default function App() {
   };
 
   return (
-    <main className="min-h-screen px-4 py-10 sm:px-6">
-      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-lg flex-col justify-between">
-        <header className="mb-10 flex items-baseline justify-between gap-4">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
-              faucetchain.github.io
-            </p>
-            <h1 className="mt-2 text-2xl font-semibold tracking-tight">Solana Faucet</h1>
-          </div>
-          <a
-            href="https://github.com/FaucetChain/FaucetWeb"
-            className="text-sm text-muted hover:text-foreground"
-          >
-            GitHub
-          </a>
-        </header>
+    <main className="tap-shell">
+      <header className="tap-header">
+        <span className="tap-mark">FaucetChain</span>
+        <span className="tap-meta">faucet.block.chains.my</span>
+      </header>
 
-        <section className="rounded-xl border border-line bg-card p-6">
-          <div className="grid grid-cols-2 gap-1 rounded-lg bg-background p-1">
-            {NETWORKS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => {
-                  setNetwork(item.id);
-                  setResult(null);
-                }}
-                className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                  network === item.id ? "bg-card text-foreground" : "text-muted hover:text-foreground"
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-
-          <p className="mt-6 text-sm text-muted">
-            Request {airdropAmount} SOL on Solana {network}. One drop per wallet every 24 hours.
+      <div className="tap-stage">
+        <section>
+          <p className="tap-eyebrow">Public cluster tap</p>
+          <h1 className="tap-title">
+            Draw
+            <br />
+            test SOL.
+          </h1>
+          <p className="tap-lede">
+            Open the Devnet or Testnet valve, paste a wallet, and take one SOL. It has no value.
+            One draw per wallet every 24 hours.
           </p>
+          <ClusterValve
+            network={network}
+            onChange={(next) => {
+              setNetwork(next);
+              setResult(null);
+            }}
+          />
+          <div className="meter" aria-live="polite">
+            <span className="meter-value">{airdropAmount.toFixed(2)}</span>
+            <span className="meter-unit">SOL / draw</span>
+          </div>
+        </section>
 
-          <form onSubmit={onSubmit} className="mt-4 space-y-3">
+        <section className="slip">
+          <div className="slip-head">
+            <span>Request slip</span>
+            <span className="stamp">{network}</span>
+          </div>
+          <form onSubmit={onSubmit}>
+            <label htmlFor="walletAddress">Wallet</label>
             <input
+              id="walletAddress"
               value={wallet}
               onChange={(event) => setWallet(event.target.value)}
               onFocus={() => setResult(null)}
-              placeholder={`${network} wallet address`}
+              placeholder={`${network} address`}
               autoComplete="off"
               spellCheck={false}
               required
-              className="h-11 w-full rounded-md border border-line bg-transparent px-3 font-mono text-sm outline-none ring-accent focus:ring-1"
             />
-            <button
-              type="submit"
-              disabled={pending || balance?.empty}
-              className="h-11 w-full rounded-md bg-accent text-sm font-medium text-background disabled:opacity-50"
-            >
-              {pending ? "Sending…" : `Airdrop ${airdropAmount} SOL`}
+            <button type="submit" disabled={pending || balance?.empty}>
+              {pending ? "Opening tap…" : `Draw ${airdropAmount} SOL`}
             </button>
           </form>
-
           {result && (
-            <p className={`mt-4 text-sm ${result.ok ? "text-accent" : "text-danger"}`}>
+            <p className={`note ${result.ok ? "ok" : "bad"}`}>
               {result.message}
               {result.ok && result.explorerUrl && (
                 <>
                   {" "}
-                  <a
-                    href={result.explorerUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline underline-offset-2"
-                  >
-                    View transaction
+                  <a href={result.explorerUrl} target="_blank" rel="noopener noreferrer">
+                    View on Solscan
                   </a>
                 </>
               )}
             </p>
           )}
-
-          <dl className="mt-6 space-y-2 border-t border-line pt-4 text-sm">
-            <div className="flex justify-between gap-4">
-              <dt className="text-muted">Faucet balance</dt>
-              <dd className="font-mono">{balance ? `${balance.sol} SOL` : "…"}</dd>
+          <dl className="slip-foot">
+            <div>
+              <dt>Reservoir</dt>
+              <dd>{balance ? (Number.isFinite(Number(balance.sol)) ? `${balance.sol} SOL` : balance.sol) : "…"}</dd>
             </div>
             {faucetAddress && (
-              <div className="flex justify-between gap-4">
-                <dt className="text-muted">Donate {network} SOL</dt>
-                <dd className="truncate font-mono">
+              <div>
+                <dt>Refill tank</dt>
+                <dd>
                   <a
                     href={explorerAddressUrl(network, faucetAddress)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:underline"
                     title={faucetAddress}
                   >
                     {`${faucetAddress.slice(0, 4)}…${faucetAddress.slice(-4)}`}
@@ -158,11 +139,14 @@ export default function App() {
             )}
           </dl>
         </section>
-
-        <footer className="mt-10 text-center text-xs text-muted">
-          Static GitHub Pages build. Devnet and testnet SOL have no value.
-        </footer>
       </div>
+
+      <footer className="tap-footer">
+        <span>No mainnet. Test SOL only.</span>
+        <a href="https://faucet.solana.com" target="_blank" rel="noopener noreferrer">
+          Official Solana faucet
+        </a>
+      </footer>
     </main>
   );
 }
