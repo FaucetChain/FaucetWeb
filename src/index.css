@@ -2,7 +2,7 @@
   --paper: #f3efe6;
   --sheet: #faf7f1;
   --ink: #2c2a26;
-  --mute: #7a746a;
+  --mute: #4f4a44;
   --line: #d8d1c4;
   --wood: #8c6a4f;
   --persimmon: #c45c3a;
@@ -29,9 +29,9 @@ body {
   margin: 0;
   color: var(--ink);
   font-family: var(--font-body);
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  -webkit-font-smoothing: antialiased;
+  font-weight: 500;
+  letter-spacing: 0;
+  -webkit-font-smoothing: auto;
 }
 
 button,
@@ -68,9 +68,9 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.22em;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -83,7 +83,8 @@ a {
 
 .host {
   color: var(--mute);
-  font-size: 0.82rem;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .lede {
@@ -93,26 +94,27 @@ a {
 .lede-kicker {
   margin: 0 0 12px;
   color: var(--mute);
-  font-size: 0.72rem;
-  letter-spacing: 0.28em;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .lede h1 {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 700;
   font-size: clamp(2.4rem, 6vw, 3.6rem);
   line-height: 1.15;
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
 }
 
 .lede p {
   max-width: 28rem;
   margin: 16px 0 0;
-  color: var(--mute);
-  font-size: 0.98rem;
-  line-height: 1.75;
+  color: var(--ink);
+  font-size: 1.05rem;
+  line-height: 1.7;
 }
 
 .waterline {
@@ -139,10 +141,10 @@ a {
 .draw {
   margin: 0 0 8px;
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 700;
   font-size: clamp(3rem, 7vw, 4.6rem);
   line-height: 1;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   font-variant-numeric: tabular-nums;
 }
 
@@ -150,8 +152,8 @@ a {
   margin-left: 10px;
   font-family: var(--font-body);
   font-size: 0.28em;
-  font-weight: 500;
-  letter-spacing: 0.16em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   vertical-align: 0.7em;
   color: var(--mute);
 }
@@ -170,7 +172,7 @@ a {
   padding: 10px 12px;
   border: 1px solid var(--line);
   background: transparent;
-  color: var(--mute);
+  color: var(--ink);
   text-align: left;
   cursor: pointer;
 }
@@ -189,19 +191,20 @@ a {
 .lane-name {
   display: block;
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 1.15rem;
-  letter-spacing: 0.02em;
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: 0;
   line-height: 1.15;
 }
 
 .lane-meta {
   display: block;
   margin-top: 4px;
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  opacity: 0.72;
+  opacity: 0.85;
 }
 
 .lane:focus-visible,
@@ -226,7 +229,8 @@ a {
   gap: 16px;
   padding: 12px 0;
   border-top: 1px solid var(--line);
-  font-size: 0.88rem;
+  font-size: 0.95rem;
+  font-weight: 500;
 }
 
 .levels div:last-child {
@@ -240,7 +244,8 @@ a {
 .levels dd {
   margin: 0;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.88rem;
+  font-weight: 500;
 }
 
 .levels a {
@@ -264,10 +269,10 @@ a {
   margin: 0 0 18px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--line);
-  color: var(--mute);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.18em;
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
@@ -286,10 +291,10 @@ a {
 }
 
 .dock label {
-  color: var(--mute);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -301,7 +306,8 @@ a {
   color: var(--ink);
   padding: 0 14px;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .dock input::placeholder {
@@ -319,9 +325,9 @@ a {
   border: 0;
   background: var(--ink);
   color: var(--sheet);
-  font-weight: 500;
-  font-size: 0.95rem;
-  letter-spacing: 0.06em;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
   cursor: pointer;
 }
 
@@ -362,7 +368,8 @@ a {
   justify-content: space-between;
   gap: 16px;
   color: var(--mute);
-  font-size: 0.78rem;
+  font-size: 0.88rem;
+  font-weight: 500;
 }
 
 .keel a {
@@ -386,8 +393,8 @@ a {
   background: transparent;
   color: var(--ink);
   text-decoration: none;
-  font-size: 0.88rem;
-  font-weight: 500;
+  font-size: 0.95rem;
+  font-weight: 700;
 }
 
 .social:hover {
