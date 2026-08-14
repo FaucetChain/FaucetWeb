@@ -34,12 +34,34 @@ export function rpcUrl(network: Network): string {
     : "https://api.testnet.solana.com";
 }
 
+function parseApiBalance(
+  network: Network,
+  body: { sol?: string; amount?: string; empty?: boolean },
+): FaucetBalance | null {
+  const raw = body.sol ?? body.amount;
+  if (raw == null || raw === "") return null;
+  const sol = String(raw);
+  const numeric = Number(sol);
+  return {
+    network,
+    sol,
+    empty: Boolean(body.empty ?? (Number.isFinite(numeric) && numeric < airdropAmount)),
+  };
+}
+
 export async function getFaucetBalance(network: Network): Promise<FaucetBalance> {
   if (faucetApi) {
-    const response = await fetch(`${faucetApi}/api/balance?network=${network}`);
-    if (response.ok) {
-      const body = (await response.json()) as FaucetBalance & { ok?: boolean };
-      if (body.sol) return body;
+    try {
+      const response = await fetch(`${faucetApi}/api/balance?network=${network}`);
+      if (response.ok) {
+        const parsed = parseApiBalance(
+          network,
+          (await response.json()) as { sol?: string; amount?: string; empty?: boolean },
+        );
+        if (parsed) return parsed;
+      }
+    } catch {
+      // Fall through to public RPC.
     }
   }
 
@@ -47,30 +69,44 @@ export async function getFaucetBalance(network: Network): Promise<FaucetBalance>
     return { network, sol: "not configured", empty: true };
   }
 
-  const response = await fetch(rpcUrl(network), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      jsonrpc: "2.0",
-      id: 1,
-      method: "getBalance",
-      params: [faucetAddress],
-    }),
-  });
-  const body = (await response.json()) as { result?: { value: number } };
-  const sol = (body.result?.value ?? 0) / LAMPORTS_PER_SOL;
-  return { network, sol: sol.toFixed(2), empty: sol < 2 };
+  try {
+    const response = await fetch(rpcUrl(network), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        id: 1,
+        method: "getBalance",
+        params: [faucetAddress],
+      }),
+    });
+    const body = (await response.json()) as { result?: { value: number } };
+    const sol = (body.result?.value ?? 0) / LAMPORTS_PER_SOL;
+    return { network, sol: sol.toFixed(2), empty: sol < airdropAmount };
+  } catch {
+    return { network, sol: "unavailable", empty: true };
+  }
 }
 
-export async function requestAirdrop(network: Network, walletAddress: string): Promise<AirdropResult> {
+export async function requestAirdrop(
+  network: Network,
+  walletAddress: string,
+  honeypot = "",
+  lead = "",
+): Promise<AirdropResult> {
   if (!faucetApi) {
     return { ok: false, message: "Faucet API is not configured" };
   }
-  const response = await fetch(`${faucetApi}/api/airdrop`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ network, walletAddress }),
-  });
-  const body = (await response.json()) as AirdropResult;
-  return body;
+  try {
+    const response = await fetch(`${faucetApi}/api/airdrop`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ network, walletAddress, company_url: honeypot, lead }),
+    });
+    const body = (await response.json()) as AirdropResult;
+    if (body?.message) return body;
+    return { ok: false, message: `Airdrop failed (${response.status})` };
+  } catch {
+    return { ok: false, message: "Could not reach the faucet API." };
+  }
 }
