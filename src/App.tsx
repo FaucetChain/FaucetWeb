@@ -123,7 +123,7 @@ export default function App() {
       ? "Sending"
       : needsLead
         ? "Verify first"
-        : `Send ${airdropAmount} SOL`;
+        : "Get the token";
 
   const socials = useMemo(() => {
     const fromConfig = config?.socials || {};
@@ -145,10 +145,10 @@ export default function App() {
         </header>
         <div className="lede">
           <p className="lede-kicker">Testnet only</p>
-          <h1>Test SOL, as needed.</h1>
+          <h1>Get the token.</h1>
           <p>
-            A small amount for building. Verify with Telegram or Discord, then paste a wallet. Once
-            every 24 hours. It has no value.
+            Paste a wallet and take test SOL. Verify with Telegram or Discord if asked. Once every 24
+            hours. It has no value.
           </p>
         </div>
       </div>
